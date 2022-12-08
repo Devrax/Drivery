@@ -1,0 +1,7 @@
+{
+  "name": "drivery",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
