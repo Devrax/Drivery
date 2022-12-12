@@ -1,11 +1,10 @@
+import { CoordsTrackerService } from './../core/services/coords-tracker.service';
 import { IonHeader, IonicModule } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MapboxMap } from '../core/maps/directives/mapbox.directive';
 import { CommonModule } from '@angular/common';
 import { Marker } from 'mapbox-gl';
 import * as mapboxgl from 'mapbox-gl';
-import Directions from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
-import mapstyle from '../core/maps/utils/map.styles';
 
 @Component({
   selector: 'tracker',
@@ -27,48 +26,56 @@ import mapstyle from '../core/maps/utils/map.styles';
     </ion-content>
   `,
   styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrackerComponent {
 
+  constructor(public coordTracker: CoordsTrackerService) {}
+
   public setMarkers(map: mapboxgl.Map) {
+    new Marker({
+      color: '#FF0000',
+    })
+      .setLngLat(map.getCenter())
+      .addTo(map);
 
-
-        const currentPosition = new Marker({
-          color: '#FF0000',
-        })
-          .setLngLat(map.getCenter())
-          .addTo(map);
-
-        const fakeDelivery = new Marker({
-          color: '#00FF00',
-        })
-          .setLngLat({ lng: -69.86188, lat: 18.54064 })
-          .addTo(map);
-
-        const direction = new Directions({
-          accessToken: 'pk.eyJ1IjoiZGV2cmFmeCIsImEiOiJja3VscGgwNG8xNDhqMm9wODZwN2l6YTk2In0.jDdxYysLDjPUBZspwNmRyw',
-          styles: mapstyle,
-          unit: 'metric',
-          profile: 'mapbox/driving-traffic',
-          congestion: true,
-          zoom: 9,
-          interactive: false,
-          controls: {
-            inputs: false,
-            instructions: false,
-            profileSwitcher: false
-          }
-        }).setOrigin([-69.86205,18.54502]).setDestination([-69.86188,18.54064]);
-
-        map.addControl(direction, 'top-left');
-
-
+      this.coordTracker.getNewcoords().subscribe(test => console.log(test));
   }
 
   public processStyle(header: IonHeader) {
     return {
-      height: `calc(100vh - ${header['el'].offsetHeight}px)`
-    }
+      height: `calc(100vh - ${header['el'].offsetHeight}px)`,
+    };
   }
 }
+
+//       const currentPosition = new Marker({
+//         color: '#FF0000',
+//       })
+//         .setLngLat(map.getCenter())
+//         .addTo(map);
+
+//       const fakeDelivery = new Marker({
+//         color: '#00FF00',
+//       })
+//         .setLngLat({ lng: -69.86188, lat: 18.54064 })
+//         .addTo(map);
+
+//       const direction = new Directions({
+//         accessToken: 'pk.eyJ1IjoiZGV2cmFmeCIsImEiOiJja3VscGgwNG8xNDhqMm9wODZwN2l6YTk2In0.jDdxYysLDjPUBZspwNmRyw',
+//         styles: mapstyle,
+//         unit: 'metric',
+//         profile: 'mapbox/driving-traffic',
+//         congestion: true,
+//         zoom: 9,
+//         interactive: false,
+//         controls: {
+//           inputs: false,
+//           instructions: false,
+//           profileSwitcher: false
+//         }
+//       }).setOrigin([-69.86205,18.54502]).setDestination([-69.86188,18.54064]);
+
+//       map.addControl(direction, 'top-left');
+
+// }
